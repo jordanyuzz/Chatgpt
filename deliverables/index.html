@@ -1,0 +1,8 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>蓝航船队 · 视频预览</title>
+<style>body{margin:0;background:#061b2b;color:white;font-family:system-ui}.hero{position:relative;min-height:100svh;background:#082c46 url('poster.jpg') center/cover no-repeat}.hero video{position:absolute;width:100%;height:100%;object-fit:cover}.copy{position:relative;z-index:1;padding:22vh 5vw;width:30%;text-shadow:0 2px 20px #001527}h1{font-size:clamp(28px,4vw,64px)}@media(prefers-reduced-motion:reduce){video{display:none}}</style>
+<section class="hero"><video id="fleet" autoplay muted loop playsinline preload="metadata" poster="poster.jpg" aria-hidden="true"></video><div class="copy"><h1>企业出海<br>稳健远航</h1><p>蓝航出海</p></div></section>
+<script>
+const v=document.querySelector('#fleet'),q=matchMedia('(prefers-reduced-motion: reduce)');
+function sync(){if(q.matches){v.pause();v.removeAttribute('src');v.replaceChildren();v.load();return;}if(!v.querySelector('source')){for(const [src,type] of [['bluevoy-fleet-loop.webm','video/webm'],['bluevoy-fleet-loop.mp4','video/mp4']]){const s=document.createElement('source');s.src=src;s.type=type;v.append(s);}v.load();}v.muted=true;v.play().catch(()=>{});}
+q.addEventListener('change',sync);sync();
+</script></html>

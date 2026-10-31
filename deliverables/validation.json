@@ -1,0 +1,42 @@
+{
+  "periodic_endpoint_max_pixel_difference": 0,
+  "last_to_first_mean_absolute_pixel_difference": 0.6540885416666666,
+  "first_to_second_mean_absolute_pixel_difference": 0.6539068930041152,
+  "method": "uncompressed RGB frames; endpoint at t=10s compared with t=0s",
+  "ship_count": 5,
+  "left_text_safe_fraction": 0.4,
+  "limitations": [
+    "2.5D photo animation",
+    "original flag textures; distant text limited by original pixels",
+    "no physical fluid simulation",
+    "no ship heave or mist animation"
+  ],
+  "mp4": {
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "fps": "30/1",
+    "decoded_frames": 300,
+    "duration": "10.000000",
+    "audio_streams": 0,
+    "full_decode": "passed",
+    "bytes": 5636526
+  },
+  "webm": {
+    "codec": "vp9",
+    "width": 1920,
+    "height": 1080,
+    "fps": "30/1",
+    "decoded_frames": 300,
+    "duration": "10.000000",
+    "audio_streams": 0,
+    "full_decode": "passed",
+    "bytes": 2779085
+  },
+  "decoded_mp4_seam": {
+    "mean_absolute_pixel_difference": 1.0221450328826904,
+    "ordinary_frame_difference_mean": 0.35756734013557434,
+    "ordinary_frame_difference_max": 0.9305529594421387,
+    "seam_to_mean_ratio": 2.8586084842681885
+  }
+}
