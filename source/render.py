@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw, ImageFilter
 import numpy as np
 from scipy.ndimage import map_coordinates
 from pathlib import Path
+from ocean import Ocean
 import subprocess, json
 ROOT=Path(__file__).resolve().parent
 W,H=1672,941; FPS=30; N=300
@@ -18,11 +19,7 @@ rigid=rigid.filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(1))
 sea=(1-np.asarray(rigid)/255)*np.clip((y-143)/35,0,1)
 # Wake fields originate at the stern and always extend towards lower right.
 wakes=[(1417,676,1.0),(1096,754,.62),(1594,603,.5),(531,287,.35),(609,235,.25)]
-wake=np.zeros((H,W),np.float32)
-for sx,sy,s in wakes:
- dx=x-sx;dy=y-sy;along=(dx*.60+dy*.80);cross=dx*.80-dy*.60
- wake+=np.exp(-(cross/(12*s+np.maximum(along,0)*.19))**2)*np.clip(along/24,0,1)*np.exp(-np.maximum(along,0)/420)*s
-wake=np.clip(wake,0,1)*sea
+ocean=Ocean(a,x,y,sea,wakes)
 # Recompose the fleet into the right 60% using a horizontal scene scale.
 S=.8; ox=334
 # Flag patches use source typography and logo, preserving exact branding.
@@ -34,18 +31,7 @@ for poly in flags:
 
 def frame(k):
  theta=2*np.pi*(k % N)/N
- depth=np.clip((y-145)/(H-145),0,1)
- # Integer temporal harmonics make sea, foam and cloth exactly periodic.
- phase=(x*.032+y*.045-theta*5)
- dx=depth*(2.6*np.sin(phase)+1.1*np.sin(x*.061+y*.025-theta*3))
- dy=depth*(1.8*np.sin(phase)+.8*np.cos(x*.025+y*.057-theta*4))
- dx+=wake*4*np.sin((x+y)*.055-theta*8)
- dy+=wake*5*np.sin((x+y)*.055-theta*8)
- coords=[np.clip(y-dy,0,H-1),np.clip(x-dx,0,W-1)]
- moving=np.stack([map_coordinates(a[:,:,c],coords,order=1,mode='nearest',prefilter=False) for c in range(3)],axis=-1)
- out=a+(moving-a)*sea[:,:,None]
- foam=(np.sin((x*.60+y*.80)*.17-theta*10)+np.sin(x*.11-y*.09-theta*6))*.5
- out+=wake[:,:,None]*foam[:,:,None]*9
+ out=ocean.frame(k,N)
  # Local cloth distortion increases towards the free trailing edge; pole is fixed.
  for j,(l,t,r,b,mask) in enumerate(flagdata):
   fy,fx=np.mgrid[t:b,l:r].astype(np.float32);u=(fx-l)/max(1,r-l-1)
@@ -68,7 +54,7 @@ def frame(k):
 
 def main():
  out=ROOT/'output';out.mkdir(exist_ok=True)
- cmd=['ffmpeg','-y','-hide_banner','-loglevel','error','-f','rawvideo','-pix_fmt','rgb24','-s','1920x1080','-r',str(FPS),'-i','-','-an','-c:v','libx264','-preset','fast','-crf','19','-pix_fmt','yuv420p','-movflags','+faststart',str(out/'bluevoy-fleet-loop.mp4')]
+ cmd=['ffmpeg','-y','-hide_banner','-loglevel','error','-f','rawvideo','-pix_fmt','rgb24','-s','1920x1080','-r',str(FPS),'-i','-','-an','-c:v','libx264','-preset','fast','-crf','17','-pix_fmt','yuv420p','-movflags','+faststart',str(out/'bluevoy-fleet-loop.mp4')]
  p=subprocess.Popen(cmd,stdin=subprocess.PIPE)
  for k in range(N):
   f=frame(k)
@@ -78,6 +64,6 @@ def main():
   if k%30==0:print(f'{k}/{N}',flush=True)
  p.stdin.close()
  if p.wait():raise RuntimeError('H.264 encoding failed')
- subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-i',str(out/'bluevoy-fleet-loop.mp4'),'-an','-c:v','libvpx-vp9','-b:v','0','-crf','32','-row-mt','1','-threads','4',str(out/'bluevoy-fleet-loop.webm')],check=True)
+ subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-i',str(out/'bluevoy-fleet-loop.mp4'),'-an','-c:v','libvpx-vp9','-b:v','0','-crf','32','-cpu-used','4','-row-mt','1','-threads','4',str(out/'bluevoy-fleet-loop.webm')],check=True)
  print('done',flush=True)
 if __name__=='__main__':main()

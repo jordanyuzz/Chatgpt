@@ -1,14 +1,48 @@
 {
-  "periodic_endpoint_max_pixel_difference": 0,
-  "last_to_first_mean_absolute_pixel_difference": 0.6540885416666666,
-  "first_to_second_mean_absolute_pixel_difference": 0.6539068930041152,
-  "method": "uncompressed RGB frames; endpoint at t=10s compared with t=0s",
+  "version": 2,
+  "periodic_endpoint_max_pixel_difference": 0.0,
+  "last_to_first_mean_absolute_pixel_difference": 2.4719907407407407,
+  "first_to_second_mean_absolute_pixel_difference": 2.464221965020576,
+  "water_motion_test": {
+    "source_pixel_dx_over_10_frames": 3,
+    "source_pixel_dy_over_10_frames": 6,
+    "method": "high-pass patch correlation at foreground x180:260 y680:760",
+    "passed": true
+  },
+  "water_direction_samples": [
+    {
+      "start_frame": 0,
+      "dx": 3,
+      "dy": 6
+    },
+    {
+      "start_frame": 60,
+      "dx": 3,
+      "dy": 6
+    },
+    {
+      "start_frame": 120,
+      "dx": 3,
+      "dy": 6
+    },
+    {
+      "start_frame": 180,
+      "dx": 3,
+      "dy": 6
+    },
+    {
+      "start_frame": 240,
+      "dx": 3,
+      "dy": 6
+    }
+  ],
+  "rigid_ship_sample_motion_test": "passed",
   "ship_count": 5,
   "left_text_safe_fraction": 0.4,
   "limitations": [
-    "2.5D photo animation",
+    "2.5D photo-textured tracking shot, not full 3D simulation",
     "original flag textures; distant text limited by original pixels",
-    "no physical fluid simulation",
+    "photographic tiled foam advection; not a fluid solver",
     "no ship heave or mist animation"
   ],
   "mp4": {
@@ -20,7 +54,7 @@
     "duration": "10.000000",
     "audio_streams": 0,
     "full_decode": "passed",
-    "bytes": 5636526
+    "bytes": 14037136
   },
   "webm": {
     "codec": "vp9",
@@ -31,12 +65,12 @@
     "duration": "10.000000",
     "audio_streams": 0,
     "full_decode": "passed",
-    "bytes": 2779085
+    "bytes": 5894508
   },
   "decoded_mp4_seam": {
-    "mean_absolute_pixel_difference": 1.0221450328826904,
-    "ordinary_frame_difference_mean": 0.35756734013557434,
-    "ordinary_frame_difference_max": 0.9305529594421387,
-    "seam_to_mean_ratio": 2.8586084842681885
+    "mean_absolute_pixel_difference": 1.3394752740859985,
+    "ordinary_frame_difference_mean": 1.022855281829834,
+    "ordinary_frame_difference_max": 1.3251491785049438,
+    "seam_to_mean_ratio": 1.3095452785491943
   }
 }
